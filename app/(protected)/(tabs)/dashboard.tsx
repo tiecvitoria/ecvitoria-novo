@@ -25,11 +25,11 @@ export default function Dashboard() {
   const [rawData, setRawData] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
   const [dataLabels, setDataLabels] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState<"geral" | "entradas" | "saidas">("geral");
+  const [selectedType, setSelectedType] = useState<"saldo" | "entradas" | "saidas">("saldo");
   const [selectedRange, setSelectedRange] = useState(7);
   const [loading, setLoading] = useState(true);
 
-  const chartHeight = selectedType === "geral" ? 155 : 300;
+  const chartHeight = selectedType === "saldo" ? 155 : 300;
 
   useEffect(() => {
     async function fetchData() {
@@ -69,9 +69,9 @@ export default function Dashboard() {
       const fullDates = entradasOrdenadas.map(([data]) => data);
       const entradas = entradasOrdenadas.map(([, valor]) => valor);
       const saidas = saidasOrdenadas.map(([, valor]) => valor);
-      const geral = entradas.map((valor, index) => valor - saidas[index]);
+      const saldo = entradas.map((valor, index) => valor - saidas[index]);
 
-      setFilteredData({ labels, entradas, saidas, geral });
+      setFilteredData({ labels, entradas, saidas, saldo });
       setDataLabels(fullDates);
     }
   }, [rawData, selectedRange]);
@@ -120,7 +120,7 @@ export default function Dashboard() {
       </Text>
     ),
     onPress: () => {
-      if (selectedType === "geral") {
+      if (selectedType === "saldo") {
         alert("Selecione 'Entradas' ou 'Saídas' para ver o detalhamento das movimentações do dia");
       } else {
         const selectedDate = dataLabels[index];
@@ -229,10 +229,10 @@ export default function Dashboard() {
             marginBottom: 20,
           }}
         >
-          {["geral", "entradas", "saidas"].map((tipo) => (
+          {["saldo", "entradas", "saidas"].map((tipo) => (
             <TouchableOpacity
               key={tipo}
-              onPress={() => setSelectedType(tipo as "geral" | "entradas" | "saidas")}
+              onPress={() => setSelectedType(tipo as "saldo" | "entradas" | "saidas")}
               style={{
                 width: "30%",
                 height: 70,
