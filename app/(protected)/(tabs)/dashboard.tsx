@@ -255,6 +255,30 @@ export default function Dashboard() {
             </TouchableOpacity>
           ))}
         </View>
+        <TouchableOpacity
+              // key={tipo}
+              // onPress={() => setSelectedType(tipo as "saldo" | "entradas" | "saidas")}
+              style={{
+                width: "97%",
+                height: 40,
+                // backgroundColor: selectedType === tipo ? "#b3270e" : "#fff",
+                backgroundColor: "gray",
+                // color:"#fff",
+                borderRadius: 12,
+                marginHorizontal: 6,
+                justifyContent: "center",
+              }}
+            >
+          <Text
+          style={{
+            color: "#fff",
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: "600",
+          }}>
+            Visualizar Vencidos !
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </LinearGradient>
   );

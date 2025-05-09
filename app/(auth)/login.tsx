@@ -23,7 +23,8 @@ export default function LoginScreen() {
     setLoading(false);
 
     if (success) {
-      router.replace("/(protected)/(tabs)/dashboard");
+      router.replace("/teste");
+      // router.replace("/(protected)/(tabs)/dashboard");
       // router.replace("/dashboard");
     } else {
       Alert.alert("Erro", "E-mail ou senha incorretos.");
