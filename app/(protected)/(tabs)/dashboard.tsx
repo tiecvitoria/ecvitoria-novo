@@ -31,6 +31,9 @@ export default function Dashboard() {
 
   const chartHeight = selectedType === "saldo" ? 155 : 300;
 
+  // Timeout de 10 segundos para a requisição
+  const API_TIMEOUT = 10000;
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -198,7 +201,7 @@ export default function Dashboard() {
 
         {/* Gráfico */}
         <View style={{ height: 350 }}>
-          <BarChart
+          {/* <BarChart
             data={chartData}
             barWidth={65}
             spacing={10}
@@ -216,7 +219,7 @@ export default function Dashboard() {
             hideYAxisText
             yAxisTextStyle={{ fontSize: 10, color: "#fff", fontWeight: "600" }}
             // valueTextStyle={{ color: "#fff", fontSize: 12, fontWeight: "500" }}
-          />
+          /> */}
         </View>
 
         {/* Seletor de tipo */}
