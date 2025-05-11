@@ -201,16 +201,19 @@ export default function Dashboard() {
 
         {/* Gráfico */}
         <View style={{ height: 350 }}>
-          {/* <BarChart
+          <BarChart
             data={chartData}
             barWidth={65}
             spacing={10}
-            width={chartWidth}
-            height={chartHeight}
+            // width={chartWidth}
+            width={300}
+            // height={chartHeight}
+            height={250}
             xAxisLabelTextStyle={{ color: "#000", fontSize: 10 }}
             noOfSections={4}
             isAnimated
-            maxValue={Math.max(...filteredData[selectedType].map(Math.abs)) + 1000000}
+            // maxValue={Math.max(...filteredData[selectedType].map(Math.abs)) + 1000000}
+            maxValue={100000}
             barBorderRadius={4}
             // showValuesAsTopLabel={true}
             scrollAnimation
@@ -219,7 +222,7 @@ export default function Dashboard() {
             hideYAxisText
             yAxisTextStyle={{ fontSize: 10, color: "#fff", fontWeight: "600" }}
             // valueTextStyle={{ color: "#fff", fontSize: 12, fontWeight: "500" }}
-          /> */}
+          />
         </View>
 
         {/* Seletor de tipo */}
