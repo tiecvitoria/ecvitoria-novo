@@ -27,36 +27,33 @@ export default function Dashboard() {
   const [dataLabels, setDataLabels] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<"saldo" | "entradas" | "saidas">("saldo");
   const [selectedRange, setSelectedRange] = useState(7);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const chartHeight = selectedType === "saldo" ? 155 : 300;
 
-  // Timeout de 10 segundos para a requisição
   const API_TIMEOUT = 10000;
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const response = await fetch("https://srv773986.hstgr.cloud/api/buscar", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // Função para buscar os dados da API
+  async function fetchData() {
+    try {
+      setLoading(true);
+      const response = await fetch("https://srv773986.hstgr.cloud/api/buscar", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (!response.ok) throw new Error("Erro ao buscar dados");
-        const data = await response.json();
-        setRawData(data.content);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      } finally {
-        setLoading(false);
-      }
+      if (!response.ok) throw new Error("Erro ao buscar dados");
+      const data = await response.json();
+      setRawData(data.content);
+    } catch (error) {
+      console.error("Erro ao buscar dados:", error);
+    } finally {
+      setLoading(false);
     }
-    fetchData();
-  }, [token]);
+  }
 
   useEffect(() => {
     if (rawData) {
@@ -84,67 +81,14 @@ export default function Dashboard() {
     router.replace("/login");
   };
 
-  if (loading || !filteredData) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#fff" />
-      </View>
-    );
+  // Função para carregar os dados ao pressionar o botão
+  function handleLoadData() {
+    fetchData();
   }
-
-  function formatNumber(num: number): string {
-    if (Math.abs(num) >= 1_000_000) {
-      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-    }
-    if (Math.abs(num) >= 1_000) {
-      return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
-    }
-    return num.toString();
-  }
-
-  const chartData = filteredData[selectedType].map((value, index) => ({
-    value,
-    label: filteredData.labels[index],
-    frontColor:
-      selectedType === "entradas"
-        ? "#262626"
-        : selectedType === "saidas"
-        ? "#bf0808"
-        : value >= 0
-        ? "#262626"
-        : "#bf0808",
-    topLabelComponent: () => (
-      <Text style={{ 
-        color: "#000", 
-        fontSize: 15, 
-        // fontWeight: "bold" 
-      }}>
-        {formatNumber(value)}
-      </Text>
-    ),
-    onPress: () => {
-      if (selectedType === "saldo") {
-        alert("Selecione 'Entradas' ou 'Saídas' para ver o detalhamento das movimentações do dia");
-      } else {
-        const selectedDate = dataLabels[index];
-        router.push({
-          pathname: "/categorias",
-          params: {
-            data: selectedDate,
-            tipo: selectedType,
-          },
-        });
-      }
-    },
-  }));
-  
 
   return (
-    <LinearGradient
-      colors={["white", "white"]}
-      style={{ flex: 1, paddingHorizontal: 20, paddingTop: 60 }}
-    >
-      {/* Botão de logout no topo */}
+    <LinearGradient colors={["white", "white"]} style={{ flex: 1, paddingHorizontal: 20, paddingTop: 60 }}>
+      {/* Botão de logout */}
       <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
         <Pressable onPress={handleLogout} style={{ padding: 6 }}>
           <Ionicons name="log-out-outline" size={24} color="#000" />
@@ -152,116 +96,42 @@ export default function Dashboard() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "400",
-            textAlign: "center",
-            color: "#000",
-          }}
-        >
-          Total do período:
-        </Text>
+        <Text style={{ fontSize: 18, fontWeight: "400", textAlign: "center", color: "#000" }}>Total do período:</Text>
 
-        <Text
-          style={{
-            fontSize: 32,
-            fontWeight: "bold",
-            marginBottom: 20,
-            textAlign: "center",
-            color: "#000",
-          }}
+        {/* Botão para carregar os dados */}
+        <TouchableOpacity
+          onPress={handleLoadData}
+          style={{ backgroundColor: "#b3270e", padding: 10, borderRadius: 8, marginBottom: 20 }}
         >
-          R${" "}
-          {filteredData[selectedType]
-            .reduce((acc, cur) => acc + cur, 0)
-            .toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </Text>
+          <Text style={{ color: "#fff", textAlign: "center" }}>Carregar Dados</Text>
+        </TouchableOpacity>
 
-        {/* Seletor de dias */}
-        <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 20 }}>
-          {[7, 15, 30].map((range) => (
-            <TouchableOpacity
-              key={range}
-              onPress={() => setSelectedRange(range)}
-              style={{
-                paddingVertical: 8,
-                paddingHorizontal: 16,
-                marginHorizontal: 5,
-                borderRadius: 20,
-                backgroundColor: selectedRange === range ? "#b3270e" : "#fff",
-              }}
-            >
-              <Text style={{ color: selectedRange === range ? "#fff" : "#000" }}>
-                {range} dias
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-                
-        {/* Gráfico */}
-        <View style={{ height: 350, backgroundColor: 'gray' }}>
-          {chartData.length ? (
+        {loading && (
+          <ActivityIndicator size="large" color="#b3270e" style={{ marginBottom: 20 }} />
+        )}
+
+        {filteredData && filteredData[selectedType]?.length > 0 ? (
+          <View style={{ height: 350, overflow: "hidden" }}>
             <BarChart
-              data={chartData}
+              data={filteredData[selectedType].map((value, index) => ({
+                value,
+                label: filteredData.labels[index],
+                frontColor: selectedType === "entradas" ? "#262626" : selectedType === "saidas" ? "#bf0808" : value >= 0 ? "#262626" : "#bf0808",
+              }))}
               barWidth={65}
               spacing={10}
-              width={chartWidth}
-              height={chartHeight}
-              xAxisLabelTextStyle={{ color: "#000", fontSize: 10 }}
+              width={300}
+              height={150}
               noOfSections={4}
-              isAnimated
-              maxValue={Math.max(...filteredData[selectedType].map(Math.abs)) + 1000000}
-              barBorderRadius={4}
-              scrollAnimation
-              autoShiftLabels={true}
               yAxisThickness={0}
               hideYAxisText
-              yAxisTextStyle={{ fontSize: 10, color: "#fff", fontWeight: "600" }}
             />
-          ) : (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ color: "#000" }}>Sem dados para exibir no gráfico</Text>
-            </View>
-          )}
-        </View>
-        
-        {/* Seletor de tipo */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: 40,
-            marginBottom: 20,
-          }}
-        >
-          {["saldo", "entradas", "saidas"].map((tipo) => (
-            <TouchableOpacity
-              key={tipo}
-              onPress={() => setSelectedType(tipo as "saldo" | "entradas" | "saidas")}
-              style={{
-                width: "30%",
-                height: 70,
-                backgroundColor: selectedType === tipo ? "#b3270e" : "#fff",
-                borderRadius: 12,
-                marginHorizontal: 6,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: selectedType === tipo ? "#fff" : "#000",
-                  textAlign: "center",
-                  fontSize: 16,
-                  fontWeight: "600",
-                }}
-              >
-                {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          </View>
+        ) : (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ color: "#000" }}>Sem dados para exibir no gráfico</Text>
+          </View>
+        )}
       </ScrollView>
     </LinearGradient>
   );
