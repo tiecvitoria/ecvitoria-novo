@@ -32,28 +32,27 @@ export default function Dashboard() {
   const chartHeight = selectedType === "saldo" ? 155 : 300;
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const response = await fetch("https://srv773986.hstgr.cloud/api/buscar", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    // Dados fictícios simulando a resposta de uma API
+    const fakeData = {
+      entradas: {
+        "2025-05-01": 500,
+        "2025-05-02": 300,
+        "2025-05-03": 450,
+        "2025-05-04": 600,
+        "2025-05-05": 700,
+      },
+      saidas: {
+        "2025-05-01": 200,
+        "2025-05-02": 100,
+        "2025-05-03": 150,
+        "2025-05-04": 250,
+        "2025-05-05": 300,
+      },
+    };
 
-        if (!response.ok) throw new Error("Erro ao buscar dados");
-        const data = await response.json();
-        setRawData(data.content);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [token]);
+    setRawData(fakeData);
+    setLoading(false); // Simula a finalização do carregamento
+  }, []);
 
   useEffect(() => {
     if (rawData) {
@@ -111,11 +110,7 @@ export default function Dashboard() {
         ? "#262626"
         : "#bf0808",
     topLabelComponent: () => (
-      <Text style={{ 
-        color: "#000", 
-        fontSize: 15, 
-        // fontWeight: "bold" 
-      }}>
+      <Text style={{ color: "#000", fontSize: 15 }}>
         {formatNumber(value)}
       </Text>
     ),
@@ -134,13 +129,9 @@ export default function Dashboard() {
       }
     },
   }));
-  
 
   return (
-    <LinearGradient
-      colors={["white", "white"]}
-      style={{ flex: 1, paddingHorizontal: 20, paddingTop: 60 }}
-    >
+    <LinearGradient colors={["white", "white"]} style={{ flex: 1, paddingHorizontal: 20, paddingTop: 60 }}>
       {/* Botão de logout no topo */}
       <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
         <Pressable onPress={handleLogout} style={{ padding: 6 }}>
@@ -149,26 +140,11 @@ export default function Dashboard() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "400",
-            textAlign: "center",
-            color: "#000",
-          }}
-        >
+        <Text style={{ fontSize: 18, fontWeight: "400", textAlign: "center", color: "#000" }}>
           Total do período:
         </Text>
 
-        <Text
-          style={{
-            fontSize: 32,
-            fontWeight: "bold",
-            marginBottom: 20,
-            textAlign: "center",
-            color: "#000",
-          }}
-        >
+        <Text style={{ fontSize: 32, fontWeight: "bold", marginBottom: 20, textAlign: "center", color: "#000" }}>
           R${" "}
           {filteredData[selectedType]
             .reduce((acc, cur) => acc + cur, 0)
@@ -209,26 +185,16 @@ export default function Dashboard() {
             isAnimated
             maxValue={Math.max(...filteredData[selectedType].map(Math.abs)) + 1000000}
             barBorderRadius={4}
-            // showValuesAsTopLabel={true}
             scrollAnimation
             autoShiftLabels={true}
             yAxisThickness={0}
             hideYAxisText
             yAxisTextStyle={{ fontSize: 10, color: "#fff", fontWeight: "600" }}
-            // valueTextStyle={{ color: "#fff", fontSize: 12, fontWeight: "500" }}
           />
         </View>
 
         {/* Seletor de tipo */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: 40,
-            marginBottom: 20,
-          }}
-        >
+        <View style={{ flexDirection: "row", justifyContent: "center", flexWrap: "wrap", marginTop: 40, marginBottom: 20 }}>
           {["saldo", "entradas", "saidas"].map((tipo) => (
             <TouchableOpacity
               key={tipo}
@@ -242,14 +208,7 @@ export default function Dashboard() {
                 justifyContent: "center",
               }}
             >
-              <Text
-                style={{
-                  color: selectedType === tipo ? "#fff" : "#000",
-                  textAlign: "center",
-                  fontSize: 16,
-                  fontWeight: "600",
-                }}
-              >
+              <Text style={{ color: selectedType === tipo ? "#fff" : "#000", textAlign: "center", fontSize: 16, fontWeight: "600" }}>
                 {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
               </Text>
             </TouchableOpacity>
