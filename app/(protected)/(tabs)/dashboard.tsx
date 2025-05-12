@@ -11,7 +11,7 @@ import {
 import { useRouter } from "expo-router";
 import { useAuth } from "../../../context/AuthContext";
 import dayjs from "dayjs";
-import { BarChart } from "react-native-gifted-charts";
+import { VictoryChart, VictoryBar, VictoryTheme } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -100,41 +100,9 @@ export default function Dashboard() {
   }
 
   const chartData = filteredData[selectedType].map((value, index) => ({
-    value,
-    label: filteredData.labels[index],
-    frontColor:
-      selectedType === "entradas"
-        ? "#262626"
-        : selectedType === "saidas"
-        ? "#bf0808"
-        : value >= 0
-        ? "#262626"
-        : "#bf0808",
-    topLabelComponent: () => (
-      <Text style={{ 
-        color: "#000", 
-        fontSize: 15, 
-        // fontWeight: "bold" 
-      }}>
-        {formatNumber(value)}
-      </Text>
-    ),
-    onPress: () => {
-      if (selectedType === "saldo") {
-        alert("Selecione 'Entradas' ou 'Saídas' para ver o detalhamento das movimentações do dia");
-      } else {
-        const selectedDate = dataLabels[index];
-        router.push({
-          pathname: "/categorias",
-          params: {
-            data: selectedDate,
-            tipo: selectedType,
-          },
-        });
-      }
-    },
+    x: filteredData.labels[index],
+    y: value,
   }));
-  
 
   return (
     <LinearGradient
@@ -197,26 +165,17 @@ export default function Dashboard() {
         </View>
 
         {/* Gráfico */}
-        <View style={{ height: 350 }}>
-          <BarChart
-            data={chartData}
-            barWidth={65}
-            spacing={10}
-            width={chartWidth}
-            height={chartHeight}
-            xAxisLabelTextStyle={{ color: "#000", fontSize: 10 }}
-            noOfSections={4}
-            isAnimated
-            maxValue={Math.max(...filteredData[selectedType].map(Math.abs)) + 1000000}
-            barBorderRadius={4}
-            // showValuesAsTopLabel={true}
-            scrollAnimation
-            autoShiftLabels={true}
-            yAxisThickness={0}
-            hideYAxisText
-            yAxisTextStyle={{ fontSize: 10, color: "#fff", fontWeight: "600" }}
-            // valueTextStyle={{ color: "#fff", fontSize: 12, fontWeight: "500" }}
-          />
+        <View style={{ height: chartHeight }}>
+          <VictoryChart theme={VictoryTheme.material} width={chartWidth} height={chartHeight}>
+            <VictoryBar
+              data={chartData}
+              style={{
+                data: { fill: selectedType === "entradas" ? "#262626" : selectedType === "saidas" ? "#bf0808" : "#3498db" },
+              }}
+              barWidth={35}
+              alignment="start"
+            />
+          </VictoryChart>
         </View>
 
         {/* Seletor de tipo */}
