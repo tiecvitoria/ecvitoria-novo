@@ -200,18 +200,18 @@ export default function Dashboard() {
         </View>
                 
         {/* Gráfico */}
-        <View style={{ height: 350 }}>
-          {/* {chartData.length ? (
+        <View style={{ height: 350, backgroundColor: 'gray' }}>
+          {chartData.length ? (
             <BarChart
               data={chartData}
               barWidth={65}
               spacing={10}
-              width={300}
-              height={150}
+              width={chartWidth}
+              height={chartHeight}
               xAxisLabelTextStyle={{ color: "#000", fontSize: 10 }}
               noOfSections={4}
               isAnimated
-              maxValue={100000}
+              maxValue={Math.max(...filteredData[selectedType].map(Math.abs)) + 1000000}
               barBorderRadius={4}
               scrollAnimation
               autoShiftLabels={true}
@@ -223,7 +223,7 @@ export default function Dashboard() {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
               <Text style={{ color: "#000" }}>Sem dados para exibir no gráfico</Text>
             </View>
-          )} */}
+          )}
         </View>
         
         {/* Seletor de tipo */}
