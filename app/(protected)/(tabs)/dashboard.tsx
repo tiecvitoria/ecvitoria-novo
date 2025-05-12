@@ -201,7 +201,7 @@ export default function Dashboard() {
                 
         {/* Gráfico */}
         <View style={{ height: 350 }}>
-          {chartData.length ? (
+          {/* {chartData.length ? (
             <BarChart
               data={chartData}
               barWidth={65}
@@ -223,7 +223,7 @@ export default function Dashboard() {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
               <Text style={{ color: "#000" }}>Sem dados para exibir no gráfico</Text>
             </View>
-          )}
+          )} */}
         </View>
         
         {/* Seletor de tipo */}
