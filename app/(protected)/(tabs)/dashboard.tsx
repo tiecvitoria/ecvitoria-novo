@@ -200,7 +200,7 @@ export default function Dashboard() {
         </View>
                 
         {/* Gráfico */}
-        <View style={{ height: 350, backgroundColor: 'gray' }}>
+        <View style={{ height: 350 }}>
           {chartData.length ? (
             <BarChart
               data={chartData}
