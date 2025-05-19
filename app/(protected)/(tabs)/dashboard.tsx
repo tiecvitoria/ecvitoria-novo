@@ -160,7 +160,7 @@ export default function Dashboard() {
             color: "#000",
           }}
         >
-          Total do período:
+          Saldo do período:
         </Text>
 
         <Text
@@ -241,7 +241,7 @@ export default function Dashboard() {
               key={tipo}
               onPress={() => setSelectedType(tipo as "saldo" | "entradas" | "saidas")}
               style={{
-                width: "30%",
+                width: "25%",
                 height: 70,
                 backgroundColor: selectedType === tipo ? "#b3270e" : "#fff",
                 borderRadius: 12,
@@ -261,6 +261,25 @@ export default function Dashboard() {
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+        <View>
+          <TouchableOpacity
+              style={{
+                width: "80%",
+                backgroundColor: "#b3270e",
+                height: 30,
+                borderRadius: 7,
+                marginHorizontal: 6,
+                justifyContent: "center",
+              }}>
+            <Text
+              style={{
+                alignContent:"center"
+              }}
+            >
+              Vencidos
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </LinearGradient>
