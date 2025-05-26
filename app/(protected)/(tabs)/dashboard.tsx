@@ -128,7 +128,8 @@ export default function Dashboard() {
       } else {
         const selectedDate = dataLabels[index];
         router.push({
-          pathname: "/categorias",
+          pathname: "/classesgerenciais",
+          // pathname: "/categorias",
           params: {
             data: selectedDate,
             tipo: selectedType,
@@ -263,7 +264,7 @@ export default function Dashboard() {
           ))}
         </View>
         <View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
               style={{
                 width: "80%",
                 backgroundColor: "#b3270e",
@@ -279,7 +280,7 @@ export default function Dashboard() {
             >
               Vencidos
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
     </LinearGradient>

@@ -9,11 +9,12 @@ const formatarData = (data: string) => {
 
 export default function Detalhamento() {
   const router = useRouter();
-  const { data, tipo, categoria, subcategoria } = useLocalSearchParams<{
+  const { data, tipo, categoria, subcategoria, classe_gerencial } = useLocalSearchParams<{
     data: string;
     tipo: "entradas" | "saidas";
     categoria: string;
     subcategoria: string;
+    classe_gerencial: string;
   }>();
 
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,7 @@ export default function Detalhamento() {
             tipo,
             categoria,
             subcategoria,
+            classe_gerencial
           }),
         });
 
@@ -75,6 +77,7 @@ export default function Detalhamento() {
               data,
               tipo,
               categoria,
+              classe_gerencial
             },
           })
         }

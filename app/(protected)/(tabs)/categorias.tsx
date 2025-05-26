@@ -10,7 +10,7 @@ const formatarData = (data: string) => {
 
 export default function Categorias() {
   const router = useRouter();
-  const { data, tipo } = useLocalSearchParams<{ data: string; tipo: "entradas" | "saidas" }>();
+  const { data, tipo, classe_gerencial } = useLocalSearchParams<{ data: string; tipo: "entradas" | "saidas"; classe_gerencial: string; }>();
   const [loading, setLoading] = useState(true);
   const [categorias, setCategorias] = useState([]);
 
@@ -31,6 +31,7 @@ export default function Categorias() {
             body: JSON.stringify({
               data: dataSelecionada,
               tipo: tipo,
+              classe_gerencial: classe_gerencial,
             }),
           }
         );
@@ -48,7 +49,7 @@ export default function Categorias() {
       }
     }
 
-    if (data && tipo) {
+    if (data && tipo && classe_gerencial) {
       fetchCategorias();
     }
   }, [data, tipo]);
@@ -106,6 +107,7 @@ export default function Categorias() {
           params: {
             data,
             tipo,
+            classe_gerencial,
             categoria: item.categoria
           },
         });

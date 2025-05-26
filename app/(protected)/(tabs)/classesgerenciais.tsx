@@ -8,61 +8,39 @@ const formatarData = (data: string) => {
   return `${dia}-${mes}-${ano}`;
 };
 
-function formatNumber(num: number): string {
-  if (Math.abs(num) >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-  }
-  if (Math.abs(num) >= 1_000) {
-    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
-  }
-  return num.toString();
-}
-
-function calculaAlturaExtra(valorMaximo: number): number {
-  if (valorMaximo >= 1_000_000) {
-    return 100_000;
-  } else if (valorMaximo >= 100_000) {
-    return 10_000;
-  } else if (valorMaximo >= 10_000) {
-    return 1_000;
-  } else if (valorMaximo >= 1_000) {
-    return 500;
-  } else {
-    return 100;
-  }
-}
-
-export default function SubCategorias() {
+export default function ClassesGerenciais() {
   const router = useRouter();
-  const { data, tipo, categoria, classe_gerencial  } = useLocalSearchParams<{ data: string; tipo: "entradas" | "saidas"; categoria: string;classe_gerencial: string; }>();
+  const { data, tipo } = useLocalSearchParams<{ data: string; tipo: "entradas" | "saidas" }>();
   const [loading, setLoading] = useState(true);
-  const [categorias, setCategorias] = useState([]);
+  const [classes, setClasses] = useState([]);
 
   const dataSelecionada = data;
 
   useEffect(() => {
-    async function fetchSubcategorias() {
+    async function fetchClasses() {
       try {
         setLoading(true);
-        const response = await fetch(`https://srv773986.hstgr.cloud/api/subcategorias`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            data: dataSelecionada,
-            tipo: tipo,
-            classe_gerencial: classe_gerencial,
-            categoria: categoria
-          }),
-        });
 
+        const response: any = await fetch(
+          `https://srv773986.hstgr.cloud/api/classes`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              data: dataSelecionada,
+              tipo: tipo,
+            }),
+          }
+        );
+        console.log(response)
         if (!response.ok) {
           throw new Error("Erro ao buscar dados");
         }
 
-        const json = await response.json();
-        setCategorias(json.content.subcategorias);
+        const data = await response.json();
+        setClasses(data.content.classes_gerenciais);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       } finally {
@@ -70,10 +48,10 @@ export default function SubCategorias() {
       }
     }
 
-    if (data && tipo && categoria) {
-      fetchSubcategorias();
+    if (data && tipo) {
+      fetchClasses();
     }
-  }, [data, tipo, categoria]);
+  }, [data, tipo]);
 
   if (loading) {
     return (
@@ -83,15 +61,39 @@ export default function SubCategorias() {
     );
   }
 
-  const valorMaximo = Math.max(...categorias.map(item => item.valor), 0);
+  function formatNumber(num: number): string {
+    if (Math.abs(num) >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    }
+    if (Math.abs(num) >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+    }
+    return num.toString();
+  }
+
+  function calculaAlturaExtra(valorMaximo: number): number {
+    if (valorMaximo >= 1_000_000) {
+      return 100_000;
+    } else if (valorMaximo >= 100_000) {
+      return 10_000;
+    } else if (valorMaximo >= 10_000) {
+      return 1_000;
+    } else if (valorMaximo >= 1_000) {
+      return 500;
+    } else {
+      return 100;
+    }
+  }
+
+  const valorMaximo = Math.max(...classes.map(item => item.valor), 0);
   const max = valorMaximo + calculaAlturaExtra(valorMaximo);
 
-  const chartData = categorias.map((item) => {
+  const chartData = classes.map((item) => {
     const formattedValue = formatNumber(item.valor);
 
     return {
       value: item.valor,
-      label: item.subcategoria,
+      label: item.classe_gerencial,
       frontColor: tipo === "entradas" ? "#5e5151" : "#bf0808",
       topLabelComponent: () => (
         <Text style={{ color: "#000", fontSize: 15 }}>
@@ -100,13 +102,11 @@ export default function SubCategorias() {
       ),
       onPress: () => {
         router.push({
-          pathname: "/detalhamento",
+          pathname: "/categorias",
           params: {
             data,
             tipo,
-            categoria,
-            subcategoria: item.subcategoria,
-            classe_gerencial
+            classe_gerencial: item.classe_gerencial,
           },
         });
       },
@@ -115,36 +115,20 @@ export default function SubCategorias() {
 
   return (
     <ScrollView style={{ flex: 1, paddingHorizontal: 20, paddingTop: 60 }}>
-      <TouchableOpacity
-        onPress={() =>
-          router.push({
-            pathname: "/categorias",
-            params: {
-              data,
-              tipo,
-              classe_gerencial
-            },
-          })
-        }
-      >
-        <Text style={{ color: "#b3270e", marginBottom: 20, fontSize: 20, marginLeft: 15 }}>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Text style={{ color: "#b3270e", marginBottom: 20, marginTop: 60, marginLeft: 15, fontSize: 20 }}>
           ← Voltar
         </Text>
       </TouchableOpacity>
 
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center" }}>
-        Subcategorias
+        Classes Gerenciais
       </Text>
 
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: 'center' }}>
         {tipo === "entradas" ? "Entradas" : "Saídas"} em {formatarData(data)}
       </Text>
 
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 30, textAlign: 'center' }}>
-        {categoria}
-      </Text>
-
-      {/* <View style={{display:'flex', justifyContent:'center', margin:'auto'}}> */}
       <BarChart
         data={chartData}
         barWidth={70}
@@ -160,20 +144,18 @@ export default function SubCategorias() {
         hideYAxisText
         yAxisTextStyle={{ fontSize: 10, color: "#fff", fontWeight: "600" }}
       />
-      {/* </View> */}
 
       <View style={{ marginTop: 30 }}>
-        {categorias.map((item, index) => (
+        {classes.map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() =>
               router.push({
-                pathname: "/detalhamento",
+                pathname: "/categorias",
                 params: {
                   data,
                   tipo,
-                  categoria,
-                  subcategoria: item.subcategoria,
+                  classe_gerencial: item.classe_gerencial,
                 },
               })
             }
@@ -186,12 +168,12 @@ export default function SubCategorias() {
               backgroundColor: '#fff',
               padding: 10,
               borderRadius: 10,
-              margin: 3,
+              margin: 3
             }}
           >
-            <Text style={{ fontSize: 13, width: "60%" }}>{item.subcategoria}</Text>
+            <Text style={{ fontSize: 13, width: "60%" }}>{item.classe_gerencial}</Text>
             <Text style={{ fontSize: 13, fontWeight: "bold" }}>
-            R$ {item.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+              R$ {item.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </Text>
           </TouchableOpacity>
         ))}
