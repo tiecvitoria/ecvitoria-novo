@@ -23,6 +23,7 @@ export default function Detalhamento() {
   const dataSelecionada = data;
 
   useEffect(() => {
+    console.log('estamos no detalhamento')
     async function fetchDetalhes() {
       try {
         setLoading(true);
@@ -33,19 +34,26 @@ export default function Detalhamento() {
           },
           body: JSON.stringify({
             data: dataSelecionada,
-            tipo,
-            categoria,
-            subcategoria,
-            classe_gerencial
+            tipo: tipo,
+            categoria: categoria,
+            subcategoria: subcategoria,
+            classe_gerencial: classe_gerencial
           }),
         });
-
+        console.log(dataSelecionada)
+        console.log(tipo)
+        console.log(categoria)
+        console.log(subcategoria)
+        console.log(classe_gerencial)
         if (!response.ok) {
           throw new Error("Erro ao buscar dados");
         }
 
         const data = await response.json();
+        console.log('retorno detalhamento')
+        console.log(data.content)
         setDetalhes(data.content.movimentacoes);
+        // console.log(detalhes)
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       } finally {

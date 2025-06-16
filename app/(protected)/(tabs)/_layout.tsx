@@ -29,6 +29,13 @@ export default function TabsLayout() {
         }} 
       />
       <Tabs.Screen 
+        name="classesgerenciais" 
+        options={{ 
+          title: "Classes",
+          tabBarIcon: ({ color }) => <FontAwesome name="th-large" size={24} color={color}/>
+        }} 
+      />
+      <Tabs.Screen 
         name="categorias" 
         options={{ 
           title: "Categorias",

@@ -17,6 +17,7 @@ export default function ClassesGerenciais() {
   const dataSelecionada = data;
 
   useEffect(() => {
+    console.log('estamos na tela de classes gerenciais')
     async function fetchClasses() {
       try {
         setLoading(true);
@@ -34,7 +35,7 @@ export default function ClassesGerenciais() {
             }),
           }
         );
-        console.log(response)
+
         if (!response.ok) {
           throw new Error("Erro ao buscar dados");
         }

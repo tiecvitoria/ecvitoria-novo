@@ -56,12 +56,17 @@ export default function SubCategorias() {
             categoria: categoria
           }),
         });
-
+        console.log(dataSelecionada)
+        console.log(tipo)
+        console.log(classe_gerencial)
+        console.log(categoria)
         if (!response.ok) {
           throw new Error("Erro ao buscar dados");
         }
 
         const json = await response.json();
+        console.log('retornoa das subcategorias')
+        console.log(json.content)
         setCategorias(json.content.subcategorias);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
@@ -174,6 +179,7 @@ export default function SubCategorias() {
                   tipo,
                   categoria,
                   subcategoria: item.subcategoria,
+                  classe_gerencial,
                 },
               })
             }

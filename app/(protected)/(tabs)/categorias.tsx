@@ -15,6 +15,7 @@ export default function Categorias() {
   const [categorias, setCategorias] = useState([]);
 
   const dataSelecionada = data;
+  const nomeClasseGerencial = classe_gerencial;
 
   useEffect(() => {
     async function fetchCategorias() {
@@ -35,7 +36,8 @@ export default function Categorias() {
             }),
           }
         );
-
+        
+        console.log(classe_gerencial)
         if (!response.ok) {
           throw new Error("Erro ao buscar dados");
         }
@@ -158,6 +160,7 @@ export default function Categorias() {
                   data,
                   tipo,
                   categoria: item.categoria,
+                  classe_gerencial, // <- ESSA LINHA FALTAVA!
                 },
               })
             }
@@ -168,9 +171,9 @@ export default function Categorias() {
               borderBottomWidth: 1,
               borderBottomColor: "#ddd",
               backgroundColor: '#fff',
-              padding:10,
-              borderRadius:10,
-              margin: 3
+              padding: 10,
+              borderRadius: 10,
+              margin: 3,
             }}
           >
             <Text style={{ fontSize: 13, width: "60%" }}>{item.categoria}</Text>
