@@ -19,8 +19,7 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
-    // const success = await login(email, password);
-    const success = true;
+    const success = await login(email, password);
     setLoading(false);
 
     if (success) {
